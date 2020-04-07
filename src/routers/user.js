@@ -3,10 +3,10 @@ const router = new express.Router();
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 const multer = require("multer");
-const sharp = require("Sharp");
+const sharp = require("sharp");
 const {
   sendWelcomeEmail,
-  sendCancellationEmail
+  sendCancellationEmail,
 } = require("../emails/account");
 router.get("/test", (req, res) => {
   res.send("from a new File.");
@@ -43,7 +43,7 @@ router.post("/users/login", async (req, res) => {
 
 router.post("/users/logout", auth, async (req, res) => {
   try {
-    req.user.tokens = req.user.tokens.filter(token => {
+    req.user.tokens = req.user.tokens.filter((token) => {
       return token.token != req.token;
     });
     await req.user.save();
@@ -107,7 +107,7 @@ router.get("/users/:id", async (req, res) => {
 router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "password", "age"];
-  const isValidOperation = updates.every(update =>
+  const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
   if (!isValidOperation) {
@@ -120,7 +120,7 @@ router.patch("/users/me", auth, async (req, res) => {
     //   runValidators: true
     // });
     // const user = await User.findById(req.params.id);
-    updates.forEach(update => (req.user[update] = req.body[update]));
+    updates.forEach((update) => (req.user[update] = req.body[update]));
     await req.user.save();
     res.send(req.user);
   } catch (e) {
@@ -131,7 +131,7 @@ router.patch("/users/me", auth, async (req, res) => {
 router.patch("/users/:id", async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "password", "age"];
-  const isValidOperation = updates.every(update =>
+  const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
   if (!isValidOperation) {
@@ -144,7 +144,7 @@ router.patch("/users/:id", async (req, res) => {
     //   runValidators: true
     // });
     const user = await User.findById(req.params.id);
-    updates.forEach(update => (user[update] = req.body[update]));
+    updates.forEach((update) => (user[update] = req.body[update]));
     await user.save();
     if (!user) {
       res.status(404).send();
@@ -184,7 +184,7 @@ router.delete("/users/:id", async (req, res) => {
 
 const upload = multer({
   limits: {
-    fileSize: 2000000
+    fileSize: 2000000,
   },
   fileFilter(req, file, cb) {
     if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
@@ -193,7 +193,7 @@ const upload = multer({
       );
     }
     return cb(undefined, true);
-  }
+  },
 });
 
 router.post(
